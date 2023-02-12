@@ -1,15 +1,21 @@
 package vask.vertx.demo.itemsservice.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.vertx.core.json.JsonObject;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Item {
+public class Item implements Serializable {
+  private static final long serialVersionUID = 8712543391380979123L;
 
-  @JsonInclude(JsonInclude.Include.NON_NULL)
+
+  @JsonProperty("id")
   private UUID _id;
+  @JsonProperty("owner")
   private UUID  owner;
+  @JsonProperty("name")
   private String  name;
 
   public Item(UUID  id, UUID  owner, String name) {
@@ -23,7 +29,7 @@ public class Item {
 
   public Item(JsonObject jsonObject) {
     this.name = jsonObject.getString("name");
-    this._id = UUID.fromString(jsonObject.getString("id"));
+    this._id = UUID.fromString(jsonObject.getString("_id"));
     this.owner = UUID.fromString(jsonObject.getString("owner"));
   }
 
