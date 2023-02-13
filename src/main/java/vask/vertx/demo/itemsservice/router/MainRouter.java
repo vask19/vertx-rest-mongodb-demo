@@ -34,10 +34,10 @@ public class MainRouter {
     JWTAuth authProvider = JWTAuth.create(vertx, authConfig);
     itemRouter.route("/*").handler(BodyHandler.create());
     itemRouter.route(API_URL + "/items/*").handler(LoggerHandler.create(LoggerHandler.DEFAULT_FORMAT)).handler(JWTAuthHandler.create(authProvider));
-    itemRouter.post(API_URL + "/register").handler(userHandler::saveUser);
+    itemRouter.post(API_URL + "/register").handler(LoggerHandler.create(LoggerHandler.DEFAULT_FORMAT)).handler(userHandler::saveUser);
     itemRouter.post(API_URL + "/login").handler(LoggerHandler.create(LoggerHandler.DEFAULT_FORMAT)).handler(jwtHandler);
-    itemRouter.post(API_URL + "/items").handler(itemHandler::insertOne).failureHandler(ResponseUtils::buildWrongTokenResponse);
-    itemRouter.get(API_URL + "/items").handler(itemHandler::findAll).failureHandler(ResponseUtils::buildWrongTokenResponse);
+    itemRouter.post(API_URL + "/items").handler(LoggerHandler.create(LoggerHandler.DEFAULT_FORMAT)).handler(itemHandler::insertOne).failureHandler(ResponseUtils::buildWrongTokenResponse);
+    itemRouter.get(API_URL + "/items").handler(LoggerHandler.create(LoggerHandler.DEFAULT_FORMAT)).handler(itemHandler::findAll).failureHandler(ResponseUtils::buildWrongTokenResponse);
 
 
     return itemRouter;

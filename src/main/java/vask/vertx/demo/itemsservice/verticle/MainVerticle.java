@@ -16,6 +16,7 @@ import vask.vertx.demo.itemsservice.repository.UserRepository;
 import vask.vertx.demo.itemsservice.router.MainRouter;
 import vask.vertx.demo.itemsservice.service.ItemService;
 import vask.vertx.demo.itemsservice.service.UserService;
+import vask.vertx.demo.itemsservice.util.DbUtils;
 
 public class MainVerticle extends AbstractVerticle {
   private final Logger logger = LoggerFactory.getLogger(MainVerticle.class);
@@ -39,7 +40,7 @@ public class MainVerticle extends AbstractVerticle {
 
   private MongoClient createMongoClient(Vertx vertx) {
     final JsonObject config = new JsonObject()
-      .put("connection_string", "mongodb://localhost:27017")
+      .put("connection_string", DbUtils.DB_URL)
       .put("useObjectId", false)
       .put("uuidRepresentation", UuidRepresentation.STANDARD);
 
