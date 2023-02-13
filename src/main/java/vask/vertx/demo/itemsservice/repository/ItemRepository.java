@@ -17,31 +17,55 @@ public class ItemRepository {
   }
 
 
-
+  /**
+   * Read all items for current user
+   *
+   * @param jsonObject JsonObject with data of user
+   * @return List<JsonObject>
+   */
   public Future<List<JsonObject>> findAll(JsonObject jsonObject){
     JsonObject query = new JsonObject()
       .put("owner", jsonObject.getString("id"));
    return client.find("items", query);
   }
 
+
+
+  /**
+   * Insert one item
+   *
+   * @param jsonObject JsonObject with date of item
+   * @return JsonObject
+   */
   public Future<JsonObject> insertItem(JsonObject jsonObject){
-    client.createCollection("items");
+    client.createCollection(COLLECTION_NAME);
     UUID id = UUID.randomUUID();
-    JsonObject item = new JsonObject()
-      .put("_id", String.valueOf(id))
-      .put("owner",jsonObject.getString("id"))
-      .put("name",jsonObject.getString("name"));
-     return client.insert(COLLECTION_NAME,item)
+     return client.insert(COLLECTION_NAME,createItemDocument(String.valueOf(id)
+         ,jsonObject.getString("id"),jsonObject.getString("name")))
        .map(res -> {
          return new JsonObject();
        })
        .onSuccess(result -> {
-         result
-           .put("name",jsonObject.getString("name"));
-
-         logger.info("item with id {} has inserted successfully");
+         result.put("name",jsonObject.getString("name"));
+         logger.info("item has inserted successfully");
        })
-       .onFailure(f -> logger.warn("item with id {} hasn't inserted successfully"));
+       .onFailure(f -> logger.warn("item hasn't inserted successfully"));
+
+    }
+
+  /**
+   * Util method for created new item document
+   *
+   * @param id String id of new item
+   * @param owner String id of user who wanna to insert the item
+   * @param name String name of new item
+   * @return JsonObject
+   */
+    private JsonObject createItemDocument(String id,String owner,String name){
+    return new JsonObject()
+        .put("_id", String.valueOf(id))
+        .put("owner",owner)
+        .put("name",name);
 
     }
 

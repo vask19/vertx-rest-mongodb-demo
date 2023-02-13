@@ -20,6 +20,15 @@ public class JWTHandler implements Handler<RoutingContext> {
     this.userService = userService;
   }
 
+
+
+  /**
+   * validation user's credentials and create JWT token for current user
+   * It should return 20 OK in case of success
+   * It should return 400 Bad Request , 404 Nof Found, 401 Unauthorized in case of failure
+   *
+   * @param rc Routing context
+   */
   @Override
   public void handle(RoutingContext rc){
     JWTAuthOptions authConfig = new JWTAuthOptions()
@@ -30,7 +39,6 @@ public class JWTHandler implements Handler<RoutingContext> {
 
     JWTAuth jwt = JWTAuth.create(vertx, authConfig);
     JsonObject body = rc.body().asJsonObject();
-
     userService.checkUsersCredentials(body)
       .onFailure(result -> ResponseUtils.buildUserNotFoundResponse(rc))
       .onSuccess(result -> {

@@ -15,6 +15,12 @@ public class UserRepository {
     this.mongoClient = mongoClient;
   }
 
+  /**
+   * Find user by login
+   *
+   * @param login String users login
+   * @return List<JsonObject> all users with the given login
+   */
   public Future<JsonObject> findByLogin(String login){
     JsonObject query = new JsonObject()
       .put("login", login);
@@ -22,22 +28,41 @@ public class UserRepository {
       .map(result -> (result.size() > 0 ? result.get(0) : new JsonObject()));
   }
 
+
+
+  /**
+   * Save user
+   *
+   * @param user User to save
+   * @return List<JsonObject> return empty list if user with this id isn't exist or  list of users who have this login
+   */
   public Future<List<JsonObject>> save(User user) {
     String id = String.valueOf(UUID.randomUUID());
-    JsonObject newUser = new JsonObject()
-      .put("_id", id)
-      .put("login", user.getLogin())
-      .put("password", user.getPassword());
     JsonObject find = new JsonObject()
       .put("login", user.getLogin());
-
     return mongoClient.find("users", find).
       onSuccess(r -> {
         if (r.size() == 0) {
-          mongoClient.insert("users", newUser)
+          mongoClient.insert("users", createUserDocument(id,user.getLogin(),user.getPassword()))
             .onSuccess(success -> logger.info("user was inserted"))
             .onFailure(failure -> logger.warn("user wasn't inserted"));
         }
       });
+  }
+
+  /**
+   * Util method for creating new user document
+   *
+   * @param id String user's id
+   * @param login String user's login
+   * @param password String user's password
+   * @return JsonObject
+   */
+  public JsonObject createUserDocument(String id,String login,String password){
+    return  new JsonObject()
+      .put("_id", id)
+      .put("login", login)
+      .put("password", password);
+
   }
 }

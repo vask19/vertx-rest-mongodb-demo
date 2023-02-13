@@ -13,20 +13,26 @@ public class ItemService {
     this.itemRepository = itemRepository;
   }
 
+
+  /**
+   * Read all items for user
+
+   */
   public Future<List<JsonObject>> findAll(JsonObject jsonObject) {
     return itemRepository.findAll(jsonObject)
       .onSuccess(success -> logger.info("get all users items"))
       .onFailure( failed -> logger.warn("wrong user"));
 
   }
+  /**
+   * Read all items for user
 
+   */
     public Future<JsonObject> save(JsonObject jsonObject) {
-      if (jsonObject.getString("name") != null){
         return itemRepository.insertItem(jsonObject)
           .onSuccess(success -> logger.info("item has been created successfully"))
           .onFailure( failed -> logger.info("item hasn't  created "));
-      }
-      else return Future.failedFuture(new RuntimeException());
+
 
   }
 

@@ -106,6 +106,13 @@
       <artifactId>netty-all</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web-validation</artifactId>
+      <version>4.3.8</version>
+    </dependency>
+
+
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>

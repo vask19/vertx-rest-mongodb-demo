@@ -17,6 +17,10 @@ public class UserService {
     this.userRepository = userRepository;
   }
 
+
+  /**
+   * save user
+   */
   public Future<Optional<User>> saveUser(User user) {
     if (user.getLogin() == null || user.getPassword() == null){
       return Future.failedFuture(new RuntimeException());
@@ -31,7 +35,10 @@ public class UserService {
         });
     }
   }
+  /**
+   * Check user's credentials
 
+   */
   public Future<Optional<User>> checkUsersCredentials(JsonObject usersCredentials) {
     return checkUsersLogin(usersCredentials.getString("login"))
       .map(result -> {
@@ -44,14 +51,27 @@ public class UserService {
       });
   }
 
+
+  /**
+   * Validation user's login
+   */
   private Future<JsonObject> checkUsersLogin(String login) {
     return userRepository.findByLogin(login);
   }
 
+
+  /**
+   * Hashed user's password
+   */
   private String hashPassword(String plainTextPassword) {
     return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
   }
 
+
+
+  /**
+   *Validation user password
+   */
   private boolean checkUsersPassword(String plainPassword, String hashedPassword) {
     return BCrypt.checkpw(plainPassword, hashedPassword);
 

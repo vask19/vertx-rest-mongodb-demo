@@ -34,6 +34,7 @@ public class MainVerticle extends AbstractVerticle {
 
 
     Router router = mainRouter.getRouter();
+
     buildHttpServer(vertx,promise,router);
   }
 
