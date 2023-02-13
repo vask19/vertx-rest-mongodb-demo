@@ -6,23 +6,21 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
 import io.vertx.ext.web.Router;
 import org.bson.UuidRepresentation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import vask.vertx.demo.itemsservice.handler.ItemHandler;
 import vask.vertx.demo.itemsservice.handler.JWTHandler;
 import vask.vertx.demo.itemsservice.handler.UserHandler;
 import vask.vertx.demo.itemsservice.repository.ItemRepository;
 import vask.vertx.demo.itemsservice.repository.UserRepository;
-import vask.vertx.demo.itemsservice.router.ItemRouter;
+import vask.vertx.demo.itemsservice.router.MainRouter;
 import vask.vertx.demo.itemsservice.service.ItemService;
 import vask.vertx.demo.itemsservice.service.UserService;
 
 public class MainVerticle extends AbstractVerticle {
   private final Logger logger = LoggerFactory.getLogger(MainVerticle.class);
-
   @Override
   public void start(Promise<Void> promise) {
-
     MongoClient mongoClient = createMongoClient(vertx);
     final UserRepository userRepository = new UserRepository(mongoClient);
     final ItemRepository itemRepository = new ItemRepository(mongoClient);
@@ -31,18 +29,14 @@ public class MainVerticle extends AbstractVerticle {
     final ItemHandler itemHandler = new ItemHandler(itemService);
     final UserHandler userHandler = new UserHandler(userService);
     final JWTHandler jwtHandler = new JWTHandler(vertx, userService);
-    final ItemRouter itemRouter = new ItemRouter(vertx, itemHandler, jwtHandler, userHandler);
+    final MainRouter mainRouter = new MainRouter(vertx, itemHandler, jwtHandler, userHandler);
 
 
-    Router router = itemRouter.getRouter();
+    Router router = mainRouter.getRouter();
     buildHttpServer(vertx,promise,router);
   }
 
 
-
-
-
-  // Private methods
   private MongoClient createMongoClient(Vertx vertx) {
     final JsonObject config = new JsonObject()
       .put("connection_string", "mongodb://localhost:27017")
@@ -55,18 +49,15 @@ public class MainVerticle extends AbstractVerticle {
   private void buildHttpServer(Vertx vertx,
                                Promise<Void> promise,
                                Router router) {
-    final int port = 8888;
-
+    final int port = 3000;
     vertx.createHttpServer()
       .requestHandler(router)
-
       .listen(port, http -> {
         if (http.succeeded()) {
           promise.complete();
-          logger.info("ok");
+          logger.info("main verticle running");
         } else {
           promise.fail(http.cause());
-          logger.info("-");
         }
       });
   }

@@ -9,6 +9,7 @@ import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.web.RoutingContext;
 import vask.vertx.demo.itemsservice.service.UserService;
+import vask.vertx.demo.itemsservice.util.ResponseUtils;
 
 public class JWTHandler implements Handler<RoutingContext> {
   private final Vertx vertx;
@@ -31,17 +32,15 @@ public class JWTHandler implements Handler<RoutingContext> {
     JsonObject body = rc.body().asJsonObject();
 
     userService.checkUsersCredentials(body)
-      .onFailure(result -> System.out.println() )
+      .onFailure(result -> ResponseUtils.buildUserNotFoundResponse(rc))
       .onSuccess(result -> {
-        if (
-          result.isPresent()) {
-          rc.response()
-            .end(jwt.generateToken(new JsonObject().put("username", "paulo"),  new JWTOptions()
-              .setAlgorithm("HS256")
-              .setExpiresInMinutes(60)));
-
+        if (result.isPresent()) {
+          String  token = jwt.generateToken(new JsonObject().put("id",String.valueOf(result.get().getId())), new JWTOptions()
+            .setAlgorithm("HS256")
+            .setExpiresInMinutes(60));
+          ResponseUtils.buildLoginSuccessfulResponse(rc,token);
         } else {
-          rc.fail(401);
+          ResponseUtils.buildUnauthorizedResponse(rc);
         }
       });
 

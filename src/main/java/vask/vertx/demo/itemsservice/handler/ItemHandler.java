@@ -1,6 +1,7 @@
 package vask.vertx.demo.itemsservice.handler;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.auth.impl.jose.JWT;
 import io.vertx.ext.web.RoutingContext;
 import vask.vertx.demo.itemsservice.service.ItemService;
 import vask.vertx.demo.itemsservice.util.ResponseUtils;
@@ -14,16 +15,20 @@ public class ItemHandler {
   }
 
   public Future<List<JsonObject>> findAll(RoutingContext rc) {
-    return itemService.findAll()
-      .onSuccess(s -> ResponseUtils.buildOkResponse(rc,s))
-      .onFailure((s -> System.out.println("oj-")));
+    String id = rc.user().principal().getString("id");
+    return itemService.findAll(new JsonObject().put("id",id))
+      .onSuccess(s -> ResponseUtils.buildAllItemsResponse(rc,s))
+      .onFailure((s -> ResponseUtils.buildUserNotFoundResponse(rc)));
   }
-    public Future<RoutingContext> insertOne(RoutingContext rc) {
-    JsonObject token = rc.user().principal();
-    return itemService.save(rc.body().asJsonObject())
-      .map(r -> rc)
-      .onSuccess(success -> ResponseUtils.buildCreatedResponse(rc,  success))
-      .onFailure(failure -> ResponseUtils.buildWrongJWTTokenResponse(rc));
+    public void insertOne(RoutingContext rc) {
+    String id = rc.user().principal().getString("id");
+    JsonObject request = rc.body().asJsonObject()
+      .put("id",id);
+     itemService.save(request)
+      .onSuccess(success -> {
+        ResponseUtils.buildCreatedResponse(rc,  success);
+      })
+      .onFailure(failure -> ResponseUtils.buildBadRequestResponse(rc));
   }
 
 

@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "_id": "7c226dae-23ae-457c-a380-df5dfcae3397",
+      "owner": "abd58aeb-e0d5-4440-9450-7b1bd6b4a761",
+      "name": "testItem"
+    },
+    {
+      "_id": "eca04c64-13e7-447e-8765-49297e75eb91",
+      "owner": "abd58aeb-e0d5-4440-9450-7b1bd6b4a761",
+      "name": "testItem"
+    },
+    {
+      "_id": "10c3ea7d-3b39-4c3f-a9e9-1effbb0c3fa8",
+      "owner": "abd58aeb-e0d5-4440-9450-7b1bd6b4a761",
+      "name": "testItem"
+    }
+  ]
+}

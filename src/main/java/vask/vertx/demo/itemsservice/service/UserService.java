@@ -2,8 +2,8 @@ package vask.vertx.demo.itemsservice.service;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import org.mindrot.jbcrypt.BCrypt;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import vask.vertx.demo.itemsservice.model.User;
 import vask.vertx.demo.itemsservice.repository.ItemRepository;
 import vask.vertx.demo.itemsservice.repository.UserRepository;
@@ -13,19 +13,23 @@ public class UserService {
   private final UserRepository userRepository;
   private final Logger logger = LoggerFactory.getLogger(ItemRepository.class);
 
-
   public UserService(UserRepository userRepository) {
     this.userRepository = userRepository;
   }
 
-
   public Future<Optional<User>> saveUser(User user) {
-    user.setPassword(hashPassword(user.getPassword()));
-    return userRepository.save(user)
-      .onSuccess(result -> logger.info("user has been saved successful"))
-      .map(r -> {
-        return (r.size() == 0 ? Optional.of(user) : Optional.empty());
-      });
+    if (user.getLogin() == null || user.getPassword() == null){
+      return Future.failedFuture(new RuntimeException());
+    }
+    else {
+      user.setPassword(hashPassword(user.getPassword()));
+      return userRepository.save(user)
+        .onSuccess(result -> logger.info("user has been saved successful"))
+        .onFailure(result -> logger.warn("user hasn't saved"))
+        .map(r -> {
+          return (r.size() == 0 ? Optional.of(user) : Optional.empty());
+        });
+    }
   }
 
   public Future<Optional<User>> checkUsersCredentials(JsonObject usersCredentials) {
@@ -38,14 +42,11 @@ public class UserService {
         }
         return Optional.empty();
       });
-
   }
-
 
   private Future<JsonObject> checkUsersLogin(String login) {
     return userRepository.findByLogin(login);
   }
-//logger.warn("user with login: {} already exists",user.getLogin())).failed()
 
   private String hashPassword(String plainTextPassword) {
     return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());

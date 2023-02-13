@@ -3,9 +3,8 @@ package vask.vertx.demo.itemsservice.repository;
 import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
-import io.vertx.ext.web.RoutingContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,27 +15,33 @@ public class ItemRepository {
   public ItemRepository(MongoClient client) {
     this.client = client;
   }
-  public Future<List<JsonObject>> findAll(){
+
+
+
+  public Future<List<JsonObject>> findAll(JsonObject jsonObject){
     JsonObject query = new JsonObject()
-      .put("owner", "032b2af5-7bac-4f8f-8ff0-fedadc6d25f7");
+      .put("owner", jsonObject.getString("id"));
    return client.find("items", query);
   }
 
   public Future<JsonObject> insertItem(JsonObject jsonObject){
     client.createCollection("items");
     UUID id = UUID.randomUUID();
-    JsonObject newUser = new JsonObject()
+    JsonObject item = new JsonObject()
       .put("_id", String.valueOf(id))
-      .put("owner","032b2af5-7bac-4f8f-8ff0-fedadc6d25f7")
-      .put("name","1111");
-     return client.insert(COLLECTION_NAME,newUser)
+      .put("owner",jsonObject.getString("id"))
+      .put("name",jsonObject.getString("name"));
+     return client.insert(COLLECTION_NAME,item)
        .map(res -> {
          return new JsonObject();
        })
-       .onSuccess(s -> {
-         logger.info("item with id {} has inserted successfully",id);
+       .onSuccess(result -> {
+         result
+           .put("name",jsonObject.getString("name"));
+
+         logger.info("item with id {} has inserted successfully");
        })
-       .onFailure(f -> logger.warn("item with id {} hasn't inserted successfully",id));
+       .onFailure(f -> logger.warn("item with id {} hasn't inserted successfully"));
 
     }
 

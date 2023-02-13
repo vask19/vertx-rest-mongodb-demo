@@ -30,8 +30,7 @@ public class UserHandler {
           ResponseUtils.buildUserAlreadyExistsResponse(rc);
         }
       })
-      .onFailure(f -> ResponseUtils.buildUserAlreadyExistsResponse(rc));
+      .onFailure(f -> ResponseUtils.buildBadRequestResponse(rc));
   }
 
 }
-//  JsonObject token = rc.user().principal();
