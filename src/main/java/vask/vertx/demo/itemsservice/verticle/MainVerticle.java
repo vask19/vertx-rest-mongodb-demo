@@ -38,6 +38,8 @@ public class MainVerticle extends AbstractVerticle {
   }
 
 
+
+
   private MongoClient createMongoClient(Vertx vertx) {
     final JsonObject config = new JsonObject()
       .put("connection_string", DbUtils.DB_URL)

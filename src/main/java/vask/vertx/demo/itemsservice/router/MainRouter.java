@@ -11,7 +11,7 @@ import vask.vertx.demo.itemsservice.handler.*;
 import vask.vertx.demo.itemsservice.util.ResponseUtils;
 
 public class MainRouter {
-  private final String API_URL = "/api/v1";
+  private static final String API_URL = "/api/v1";
   private final Vertx vertx;
   private final ItemHandler itemHandler;
   private final UserHandler userHandler;
