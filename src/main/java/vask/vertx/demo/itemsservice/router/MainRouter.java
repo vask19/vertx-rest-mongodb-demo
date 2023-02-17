@@ -8,6 +8,7 @@ import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.JWTAuthHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
 import vask.vertx.demo.itemsservice.handler.*;
+import vask.vertx.demo.itemsservice.util.JWTUtils;
 import vask.vertx.demo.itemsservice.util.ResponseUtils;
 
 public class MainRouter {
@@ -25,15 +26,10 @@ public class MainRouter {
   }
 
   public Router getRouter() {
-    JWTAuthOptions authConfig = new JWTAuthOptions()
-      .setKeyStore(new KeyStoreOptions()
-        .setType("jceks")
-        .setPath("keystore.jceks")
-        .setPassword("secret"));
     final Router itemRouter = Router.router(vertx);
-    JWTAuth authProvider = JWTAuth.create(vertx, authConfig);
+    JWTAuth authProvider = JWTAuth.create(vertx, JWTUtils.buildAuthConfig());
     itemRouter.route("/*").handler(BodyHandler.create());
-    itemRouter.route(API_URL + "/items/*").handler(LoggerHandler.create(LoggerHandler.DEFAULT_FORMAT)).handler(JWTAuthHandler.create(authProvider));
+    itemRouter.route(API_URL + "/items/*").handler(JWTAuthHandler.create(authProvider));
     itemRouter.post(API_URL + "/register").handler(LoggerHandler.create(LoggerHandler.DEFAULT_FORMAT)).handler(userHandler::saveUser);
     itemRouter.post(API_URL + "/login").handler(LoggerHandler.create(LoggerHandler.DEFAULT_FORMAT)).handler(jwtHandler);
     itemRouter.post(API_URL + "/items").handler(LoggerHandler.create(LoggerHandler.DEFAULT_FORMAT)).handler(itemHandler::insertOne).failureHandler(ResponseUtils::buildWrongTokenResponse);

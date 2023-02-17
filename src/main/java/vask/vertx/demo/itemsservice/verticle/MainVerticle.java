@@ -20,6 +20,7 @@ import vask.vertx.demo.itemsservice.util.DbUtils;
 
 public class MainVerticle extends AbstractVerticle {
   private final Logger logger = LoggerFactory.getLogger(MainVerticle.class);
+
   @Override
   public void start(Promise<Void> promise) {
     MongoClient mongoClient = createMongoClient(vertx);
@@ -32,9 +33,7 @@ public class MainVerticle extends AbstractVerticle {
     final JWTHandler jwtHandler = new JWTHandler(vertx, userService);
     final MainRouter mainRouter = new MainRouter(vertx, itemHandler, jwtHandler, userHandler);
 
-
     Router router = mainRouter.getRouter();
-
     buildHttpServer(vertx,promise,router);
   }
 

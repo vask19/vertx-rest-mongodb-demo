@@ -9,6 +9,7 @@ import io.vertx.ext.auth.jwt.JWTAuth;
 import io.vertx.ext.auth.jwt.JWTAuthOptions;
 import io.vertx.ext.web.RoutingContext;
 import vask.vertx.demo.itemsservice.service.UserService;
+import vask.vertx.demo.itemsservice.util.JWTUtils;
 import vask.vertx.demo.itemsservice.util.ResponseUtils;
 
 public class JWTHandler implements Handler<RoutingContext> {
@@ -31,12 +32,7 @@ public class JWTHandler implements Handler<RoutingContext> {
    */
   @Override
   public void handle(RoutingContext rc){
-    JWTAuthOptions authConfig = new JWTAuthOptions()
-      .setKeyStore(new KeyStoreOptions()
-        .setType("jceks")
-        .setPath("keystore.jceks")
-        .setPassword("secret"));
-
+    JWTAuthOptions authConfig = JWTUtils.buildAuthConfig();
     JWTAuth jwt = JWTAuth.create(vertx, authConfig);
     JsonObject body = rc.body().asJsonObject();
     userService.checkUsersCredentials(body)

@@ -14,7 +14,6 @@ public class ItemHandler {
     this.itemService = itemService;
   }
 
-
   /**
    * Read all items for user
    * It should return 200 OK in case of success

@@ -39,7 +39,7 @@ public class ResponseUtils {
 
     public static void buildCreatedResponse(RoutingContext rc,
                                             JsonObject response) {
-      final JsonObject message = new JsonObject().put(ANSWER_DESCRIPTION, String.format("Item with name: %s was created successfully",response.getString("name")));
+      final JsonObject message = new JsonObject().put(ANSWER_DESCRIPTION, String.format("Item with name: %s has created successfully",response.getString("name")));
 
 
       rc.response()

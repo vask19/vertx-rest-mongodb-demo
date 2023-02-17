@@ -38,8 +38,8 @@ public class TestMainVerticle {
 
   @Test
   @Order(1)
-  @DisplayName("Read all books")
-  void readAllItemsByCurrentUserTestReturnAllUsersItemsAndOkStatus(Vertx vertx, VertxTestContext testContext) {
+  @DisplayName("Read all items")
+  void readAllItemsByCurrentUserReturnAllUsersItemsAndOkStatusTest(Vertx vertx, VertxTestContext testContext) {
     final WebClient webClient = WebClient.create(vertx);
       webClient
         .post(3000,"localhost", API_URL +"/login")
@@ -68,7 +68,7 @@ public class TestMainVerticle {
   @Test
   @Order(2)
   @DisplayName("Create item")
-  void saveNewItemInDbTestIfSuccessReturnCreatedStatus(Vertx vertx,
+  void saveNewItemInDbIfSuccessReturnCreatedStatusTest(Vertx vertx,
               VertxTestContext testContext) throws IOException {
 
     final JsonObject body = readFileAsJsonObject("src/test/resources/create/request.json");
@@ -103,7 +103,7 @@ public class TestMainVerticle {
   @Test
   @Order(3)
   @DisplayName("Registration user")
-  void registrationNewUserTestIfUserIsntExistsReturnCreatedStatus(Vertx vertx,
+  void registrationNewUserIfUserIsntExistsReturnCreatedStatusTest(Vertx vertx,
                     VertxTestContext testContext) throws IOException {
     final WebClient webClient = WebClient.create(vertx);
     final JsonObject body = readFileAsJsonObject("src/test/resources/registration/request.json");

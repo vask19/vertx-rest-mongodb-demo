@@ -6,7 +6,7 @@ import io.vertx.core.Vertx;
 import vask.vertx.demo.itemsservice.verticle.MainVerticle;
 
 public class Main {
-  public static void main(String[] args) throws ClassNotFoundException {
+  public static void main(String[] args) {
     System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.SLF4JLogDelegateFactory");
 
 

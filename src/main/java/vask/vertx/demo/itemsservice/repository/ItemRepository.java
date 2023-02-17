@@ -26,10 +26,8 @@ public class ItemRepository {
   public Future<List<JsonObject>> findAll(JsonObject jsonObject){
     JsonObject query = new JsonObject()
       .put("owner", jsonObject.getString("id"));
-   return client.find("items", query);
+   return client.find(COLLECTION_NAME, query);
   }
-
-
 
   /**
    * Insert one item
